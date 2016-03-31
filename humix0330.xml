@@ -1,0 +1,505 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dialog xsi:noNamespaceSchemaLocation="WatsonDialogDocument_1.0.xsd" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <flow>
+        <folder label="Main">
+            <input>
+                <grammar>
+                    <item>DIALOG_START_OVER</item>
+                </grammar>
+                <output>
+                    <prompt>
+                        <item>很開心您使用鬧鐘服務，你需要哪種服務?鬧鐘服務還是計時服務</item>
+                    </prompt>
+                    <goto ref="clock_or_stopwatch"/>
+                </output>
+            </input>
+            <output>
+                <prompt>
+                    <item>很開心您使用鬧鐘服務，你需要哪種服務?鬧鐘服務還是計時服務</item>
+                </prompt>
+				<action varName="CLASSIFIER_CLASS_0" operator="SET_TO_BLANK"/>
+                <goto ref="clock_or_stopwatch"/>
+            </output>
+            <output id="processNextUserRequest">
+                <prompt>
+                    <item>DIALOG_COMPLETED</item>
+                </prompt>
+                <goto ref="first_input"/>
+            </output>
+          <!--   <getUserInput id="processUserRequest">
+					<goto ref="first_input"/>
+					<input>
+						<grammar>
+							<item> 不 * 講</item>
+							<item>$不 知</item>
+							<item>$不</item>
+							<item>$關 你</item>
+						</grammar>
+						<output>
+							<prompt>
+								<item>好吧，不說沒有關係</item>
+							</prompt>
+								<goto ref="first_input"/>
+						</output>
+					</input>
+					<input>
+						<grammar>
+							<item>$ 我 叫 (DYNAMIC_DATA)={User_Name} aaa</item>
+							<item>$ 我 是 (DYNAMIC_DATA)={User_Name} aaa</item>
+							<item>$ my name is (DYNAMIC_DATA)={User_Name} aaa</item>
+							<item>$ I'm (DYNAMIC_DATA)={User_Name} aaa</item>
+							<item>$ I am (DYNAMIC_DATA)={User_Name} aaa</item>
+							<item>$ (DYNAMIC_DATA)={User_Name} aaa</item>
+							
+						</grammar>
+						<action varName="User_Name" operator="SET_TO">{User_Name.source}</action>
+						<output>
+							<prompt>
+								<item>你好 {User_Name} 請問你需要什麼幫忙?</item>
+							</prompt>
+							<goto ref="first_input"/>
+						</output>
+					</input>
+					
+					
+            </getUserInput> -->
+			
+			<!-- <getUserInput id="first_input">
+			<input>
+					<grammar>
+						<item>$(DYNAMIC_DATA)={User_Input} aaa</item>
+					</grammar>
+						<action varName="User_Input" operator="SET_TO">{User_Input.source}</action>
+						<goto ref="class_first"/>
+			</input>
+			<input id="class_first">
+					<grammar>
+							<item>$aaa (DYNAMIC_DATA)={o_input}</item>
+					</grammar>
+					<action varName="o_input" operator="SET_TO">{o_input.source}</action>
+					<action varName="o_input" operator="SET_AS_USER_INPUT"/>
+					<goto ref="cl1"/>
+			</input>
+				<search  id="cl1" ref="">
+								
+								
+								<classifier policy="SEARCHMODE_CLASSIFIER"
+										threshold="0.6" exactMatchFirst="false"
+										fuzzyThreshold="0.1" trainOnInput="true" trainOnOutput="true">
+										<customParams>nlcmodelid=9a9388x45-nlc-1770
+										</customParams>
+								</classifier>
+								
+				</search>
+					
+					<if id="check">
+						<cond varName="CLASSIFIER_CLASS_0" operator="HAS_VALUE"></cond>			
+								<action varName="User_Input" operator="APPEND"> {CLASSIFIER_CLASS_0}</action>
+								<action varName="User_Input" operator="SET_AS_USER_INPUT"/>
+											<search ref="new_account"/>
+											<default>
+												<output id="repeat_again">
+													<prompt selectionType="RANDOM">
+														<item>不好意思我沒有聽清楚，請再說一遍</item>
+													</prompt>
+													<goto ref="first_input"/>
+												</output>
+											</default>
+							
+					</if>
+					<goto ref="check"/>
+			</getUserInput> -->
+            <folder label="Library Intents">
+				<folder label="clock_or_stopwatch" id="clock_or_stopwatch">
+					<getUserInput>
+						<input>
+							<grammar>
+								<item>$ 鬧 鐘</item>
+							</grammar>
+							<output>
+								<prompt>
+									<item>好的您選擇為鬧鐘服務</item>
+								</prompt>
+								<goto ref="clock_service_output"/>
+							</output>
+						</input>
+						<input>
+							<grammar>
+								<item>$ 碼 表</item>
+								<item>$ 碼 錶</item>
+								<item>$ 計 </item>
+							</grammar>
+							<output>
+								<prompt>
+									<item>好的您選擇為碼表服務</item>
+								</prompt>
+								<goto ref="stopwatch_service_output"/>
+							</output>
+						</input>
+						<output>
+							<prompt>
+								<item>不好意思，我沒有聽清楚，請您再說一次</item>
+							</prompt>
+							<goto ref="clock_or_stopwatch"/>
+						</output>
+					</getUserInput>
+					
+					<folder label="stopwatch_folder" id="stopwatch_folder">
+						<output id="stopwatch_service_output">
+							<prompt>
+								<item>多久之後要給您提醒呢?</item>
+							</prompt>
+							<getUserInput>
+								<input>
+									<grammar>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小 時 又 (DYNAMIC_DATA)={s_min} 分 鐘 又 (DYNAMIC_DATA)={s_sec} 秒</item>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小 時 又 (DYNAMIC_DATA)={s_min} 分 鐘 (DYNAMIC_DATA)={s_sec} 秒</item>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小 時 (DYNAMIC_DATA)={s_min} 分 鐘 (DYNAMIC_DATA)={s_sec} 秒</item>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小 時 (DYNAMIC_DATA)={s_min} 分 鐘 又 (DYNAMIC_DATA)={s_sec} 秒</item>
+									</grammar>
+									<action varName="s_hour" operator="SET_TO">{s_hour.source}</action>
+									<action varName="s_min" operator="SET_TO">{s_min.source}</action>
+									<action varName="s_sec" operator="SET_TO">{s_sec.source}</action>
+									<output>
+										<prompt>
+											<item>好的!將在{s_hour}小時又{s_min}分鐘{s_sec}秒後提醒您</item>
+										</prompt>
+										<goto ref="clock_or_stopwatch"/>
+									</output>
+								</input>
+								<input>
+									<grammar>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小 時 又 (DYNAMIC_DATA)={s_min} 分 </item>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小 時  (DYNAMIC_DATA)={s_min} 分 </item>
+									</grammar>
+									<action varName="s_hour" operator="SET_TO">{s_hour.source}</action>
+									<action varName="s_min" operator="SET_TO">{s_min.source}</action>
+									<output>
+										<prompt>
+											<item>好的!將在{s_hour}小時又{s_min}分鐘後提醒您</item>
+										</prompt>
+										<goto ref="clock_or_stopwatch"/>
+									</output>
+								</input>
+								<input>
+									<grammar>
+										<item>$ (DYNAMIC_DATA)={s_min} 分 鐘 又 (DYNAMIC_DATA)={s_sec} 秒</item>
+										<item>$ (DYNAMIC_DATA)={s_min} 分 鐘 (DYNAMIC_DATA)={s_sec} 秒</item>
+									</grammar>
+									<action varName="s_min" operator="SET_TO">{s_min.source}</action>
+									<action varName="s_sec" operator="SET_TO">{s_sec.source}</action>
+									<output>
+										<prompt>
+											<item>好的!將在{s_min}分鐘{s_sec}秒後提醒您</item>
+										</prompt>
+										<goto ref="clock_or_stopwatch"/>
+									</output>
+								</input>
+								<input>
+									<grammar>
+										<item>$ (DYNAMIC_DATA)={s_hour} 小</item>
+									</grammar>
+									<action varName="s_hour" operator="SET_TO">{s_hour.source}</action>
+									<output>
+										<prompt>
+											<item>好的!將在{s_hour}小時後提醒您</item>
+										</prompt>
+										<goto ref="clock_or_stopwatch"/>
+									</output>
+								</input>
+								<input>
+									<grammar>
+										<item>$ (DYNAMIC_DATA)={s_min} 分</item>
+									</grammar>
+									<action varName="s_min" operator="SET_TO">{s_min.source}</action>
+									<output>
+										<prompt>
+											<item>好的!將在{s_min}分鐘後提醒您</item>
+										</prompt>
+										<goto ref="clock_or_stopwatch"/>
+									</output>
+								</input>
+								<input>
+									<grammar>
+										<item>$ (DYNAMIC_DATA)={s_sec} 秒</item>
+									</grammar>
+									<action varName="s_sec" operator="SET_TO">{s_sec.source}</action>
+									<output>
+										<prompt>
+											<item>好的!將在{s_sec}秒後提醒您</item>
+										</prompt>
+										<goto ref="clock_or_stopwatch"/>
+									</output>
+								</input>
+							</getUserInput>
+						</output>
+						
+						
+						
+					</folder>
+					
+					
+					
+					
+					<folder label="clock_folder" id="clock_folder">
+						<output id="clock_service_output">
+							<prompt>
+								<item>您需要幾點的鬧鐘服務?</item>
+							</prompt>
+							<getUserInput>
+							
+								<input>
+									<grammar>
+										<item>$ (clock_chose)={time_scope} * (clock_time)={time} 點 (DYNAMIC_DATA)={time_min} 分</item>
+										<item>$ (clock_chose)={time_scope} (clock_time)={time} 點 (DYNAMIC_DATA)={time_min} 分</item>
+										<item>$ (clock_chose)={time_scope} * (clock_time)={time} 點 (DYNAMIC_DATA)={time_min} </item>
+										<item>$ (clock_chose)={time_scope} (clock_time)={time} 點 (DYNAMIC_DATA)={time_min} </item>
+									</grammar>
+									<action varName="time_min" operator="SET_TO">{time_min.source}</action>
+									<action varName="time" operator="SET_TO">{time.source}</action>
+									<action varName="time_scope" operator="SET_TO">{time_scope.value:main}</action>
+									<goto ref="clock_final_output"/>
+									
+								</input>
+								
+								<input>
+									<grammar>
+										<item>$ (clock_time)={time} 點 (DYNAMIC_DATA)={time_min} 分</item>
+										<item>$ (clock_time)={time} 點 (DYNAMIC_DATA)={time_min} </item>
+									</grammar>
+									<action varName="time_min" operator="SET_TO">{time_min.source}</action>
+									<action varName="time" operator="SET_TO">{time.source}</action>
+									<output>
+										<prompt>
+											<item>好的，幫您設定{time}點{time_min}分，那請問是哪個時段呢?早上還是晚上?</item>
+										</prompt>
+										<goto ref="time_scope_userinput"/>
+									</output>
+								</input>
+								
+								<input>
+									<grammar>
+										<item>$ (clock_chose)={time_scope} * (clock_time)={time} 點</item>
+										<item>$ (clock_chose)={time_scope} (clock_time)={time} 點</item>
+									</grammar>
+									<action varName="time" operator="SET_TO">{time.source}</action>
+									<action varName="time_scope" operator="SET_TO">{time_scope.value:main}</action>
+									<goto ref="clock_final_output"/>
+								</input>
+								<input>
+									<grammar>
+										<item>$ (clock_time)={time} 點</item>
+									</grammar>
+									<action varName="time" operator="SET_TO">{time.source}</action>
+									<output>
+										<prompt>
+											<item>好的，幫您設定{time}點，那請問是哪個時段呢?早上還是晚上?</item>
+										</prompt>
+										<goto ref="time_scope_userinput"/>
+									</output>
+								</input>
+								<output>
+									<prompt>
+										<item>不好意思，我沒有聽清楚，請您再說一次</item>
+									</prompt>
+									<goto ref="clock_service_output"/>
+								</output>
+							</getUserInput>
+						</output>
+						
+						<getUserInput id="time_scope_userinput">
+							<input>
+							<grammar>
+								<item>$ (clock_chose)={time_scope}</item>
+							</grammar>
+								<action varName="time_scope" operator="SET_TO">{time_scope.value:main}</action>
+								<goto ref="clock_final_output"/>
+							</input>
+							<output>
+								<prompt>
+									<item>不好意思，我沒有聽清楚，請您再說一次</item>
+								</prompt>
+								<goto ref="time_scope_userinput"/>
+							</output>
+
+						</getUserInput>
+						<folder label="clock_final_output" id="clock_final_output">
+								<if>
+									<cond varName="time_min" operator="HAS_VALUE"/>
+										<output>
+											<prompt>
+												<item>好的，那就幫您設定鬧鐘時間為，{time_scope}{time}點{time_min}分</item>
+											</prompt>
+											<goto ref="clock_or_stopwatch"/>
+										</output>
+								</if>
+								<output>
+									<prompt>
+										<item>好的，那就幫您設定鬧鐘時間為，{time_scope}{time}點</item>
+									</prompt>
+									<goto ref="clock_or_stopwatch"/>
+								</output>
+						</folder>
+					</folder>
+					
+				
+					
+					
+					
+					
+					
+				</folder>
+				
+				
+			
+				
+				
+             
+			
+             <folder label="Storage"/>
+            </folder>
+            <folder label="Global"/>
+            <folder label="Concepts">
+                <concept>
+                    <grammar>
+                        <item>IPA</item>
+                        <item>Intelligent Agent</item>
+                        <item>Intelligent Personal Agent</item>
+                    </grammar>
+                </concept>
+            </folder>
+        </folder>
+    </flow>
+    <entities>
+		<entity name="DYNAMIC_DATA">
+            <value name="DataCapture" value="DataCapture">
+                <grammar>
+                    <item>*</item>
+                </grammar>
+            </value>
+        </entity>
+		<entity name="clock_chose">
+			<value name="早 上" value="早 上"/>
+			<value name="中 午" value="中 午"/>
+			<value name="下 午" value="下 午"/>
+			<value name="晚 上" value="晚 上"/>
+			<value name="半 夜" value="半 夜"/>
+			<value name="凌 晨" value="凌 晨"/>
+		</entity>
+		<entity name="clock_time">
+			<value name="十 一" value="十 一"/>
+			<value name="十 二" value="十 二"/>
+			<value name="一" value="一"/>
+            <value name="二" value="二"/>
+			<value name="兩" value="二"/>
+			<value name="三" value="三"/>
+			<value name="四" value="四"/>
+			<value name="五" value="五"/>
+			<value name="六" value="六"/>
+            <value name="七" value="七"/>
+			<value name="八" value="八"/>
+			<value name="九" value="九"/>
+			<value name="十" value="十"/>
+			
+		</entity>
+    </entities>
+    <constants>
+        <var_folder name="Home">
+            <var_folder name="General" type="CONST">
+                <var name="IA" type="TAG">Intelligent Agent</var>
+            </var_folder>
+        </var_folder>
+    </constants>
+    <variables>
+		<var_folder name="User_info">
+			<var name="helped_person" type="TEXT"/>
+			<var name="o_input" type="TEXT"/>
+			<var name="User_Input" type="TEXT"/>
+			<var name="User_Name" type="TEXT" initValue="friend"/>
+			<var name="time" type="NUMBER" />
+			<var name="time_scope" type="TEXT"/>
+			<var name="User_age"  type="TEXT" initVale="0"/>
+			<var name="User_country" type="TEXT" />
+			<var name="User_child" type="TEXT" initValue="NO"/>
+			<var name="time_min" type="TEXT"/>
+			<var name="s_hour" type="TEXT"/>
+			<var name="s_min" type="TEXT"/>
+			<var name="s_sec" type="TEXT"/>
+		</var_folder>
+        <var_folder name="Home">
+			<var name="CLASSIFIER_CLASS_0" type="TEXT"/>
+			
+			<var name="var-drink" type="TEXT" description="test"/>
+            <var name="var-invite_type" type="TEXT" description="First person to invite to the meeting"/>
+            <var name="var-invite_attendee1" type="TEXT" description="First person to invite to the meeting"/>
+            <var name="var-invite_attendee2" type="TEXT" description="Second person to invited to othe meeting"/>
+            <var name="var-invite_date" type="TEXT" description="Date for the meeting"/>
+            <var name="var-invite_time" type="TEXT" description="Time for the meeting"/>
+			<var name="unknown_thing" type= "TEXT" description="unk"/>
+        </var_folder>
+    </variables>
+    <settings>
+        <setting name="USERIDNUM" type="USER">17384</setting>
+        <setting name="EMAIL" type="USER"></setting>
+        <setting name="PASSWORD" type="USER"></setting>
+        <setting name="FIRSTNAME" type="USER">IBM</setting>
+        <setting name="LASTNAME" type="USER">Watson</setting>
+        <setting name="COUNTRY" type="USER">USA</setting>
+        <setting name="STATE" type="USER">NY State</setting>
+        <setting name="CITY" type="USER">NY</setting>
+        <setting name="BDAY" type="USER">1</setting>
+        <setting name="BMONTH" type="USER">1</setting>
+        <setting name="BYEAR" type="USER">2000</setting>
+        <setting name="SEX" type="USER">Male</setting>
+        <setting name="DISPLAYNAME" type="USER">John</setting>
+        <setting name="PROVIDESECURITYPASSWORD" type="USER">false</setting>
+        <setting name="SECURITYPASSWORD" type="USER"></setting>
+        <setting name="SHOWPERSPROFILE" type="USER">false</setting>
+        <setting name="USETYPE" type="USER">0</setting>
+        <setting name="DATEJOINED" type="USER">2015-07-14 15:12:07.745</setting>
+        <setting name="LASTLOGIN" type="USER">2015-07-14 15:12:07.745</setting>
+        <setting name="LOGINCOUNT" type="USER">0</setting>
+        <setting name="CREDIT" type="USER">100</setting>
+        <setting name="CONVCOUNT" type="USER">4</setting>
+        <setting name="PERSONALITYTYPEID" type="USER">6</setting>
+        <setting name="SHOWSENDMESSAGE" type="USER">true</setting>
+        <setting name="ACTIVATED" type="USER">true</setting>
+        <setting name="MESSENGEREMAIL" type="USER"></setting>
+        <setting name="MESSENGERPASSWORD" type="USER"></setting>
+        <setting name="SENDCHATEMAIL" type="USER">false</setting>
+        <setting name="SENDFAVEMAIL" type="USER">true</setting>
+        <setting name="CACHE" type="USER">true</setting>
+        <setting name="CLASSTYPE" type="USER">3</setting>
+        <setting name="AUTOLEARN" type="USER">false</setting>
+        <setting name="LANGUAGE" type="USER">EN</setting>
+        <setting name="RESPONSETIME" type="USER">-2</setting>
+        <setting name="MAXAUTOLEARNITEMS" type="USER">4</setting>
+        <setting name="NUMAUTOSETRELATED" type="USER">0</setting>
+        <setting name="TIMEZONEID" type="USER">America/New_York</setting>
+        <setting name="AUTOSETRELATEDNODEID" type="USER">0</setting>
+        <setting name="RETURNTOCHATNODEID" type="USER">0</setting>
+        <setting name="INPUTMASKTYPE" type="USER">0</setting>
+        <setting name="NUMLOGINATTEMPTS" type="USER">0</setting>
+        <setting name="CONCEPTMATCHING" type="USER">1</setting>
+        <setting name="UI_COLOUR"></setting>
+        <setting name="USE_CONCEPTS">3</setting>
+        <setting name="PARENT_ACCOUNT"></setting>
+        <setting name="AL_NONE_LABEL">None of the above</setting>
+        <setting name="ASR_RANDOM">true</setting>
+        <setting name="DYNAMIC_MESSAGING">false</setting>
+        <setting name="DOCBASE_NUM_RESULTS">3</setting>
+        <setting name="DOCBASE_DESC_LEN">250</setting>
+        <setting name="STATUS">0</setting>
+        <setting name="DEFAULT_DNR_RETURN_POINT_CANDIDATE">-1</setting>
+        <setting name="ENTITIES_SCOPE">3</setting>
+        <setting name="POSTNODEID"></setting>
+        <setting name="MULTISENT">0</setting>
+        <setting name="DNR_NODE_ID">-15</setting>
+        <setting name="CLEARCACHE"></setting>
+    </settings>
+    <specialSettings>
+        <specialSetting label="DNR Join Statement">
+            <variations/>
+        </specialSetting>
+    </specialSettings>
+</dialog>
